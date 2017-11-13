@@ -1,0 +1,5 @@
+{
+  "name": "mailgun",
+  "private": true,
+  "dependencies": {}
+}
