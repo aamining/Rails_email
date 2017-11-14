@@ -1,13 +1,14 @@
-# setup sending Email by our gmail account.
+# setup sending Email by action mailer and our gmail account.
 
 By this method we do not use mailgun but we using our gmail account as a SMTP account.
 
-So we have to change our gmail scurity  as following:
+So we have to change our gmail security  as following:
 
 by this link:
 
 ```
 https://accounts.google.com/DisplayUnlockCaptcha
+
 ```
 and by checking or gmail inbox and review email of
 
@@ -17,7 +18,14 @@ and change :
 
  "allowing access to less secure apps"
 
- link of that email
+ link of that email.
+
+ or by this link:
+
+ ```
+https://myaccount.google.com/lesssecureapps
+
+ ```
 
 
 # Sending Emails Using ActionMailer and Gmail
@@ -29,8 +37,8 @@ In : config/environments/development.rb:
 ```
 config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
-
 ```
+Important:by any change in config we need to restart the server  if we want to run code.
 
 and in : config>environment>development
 
@@ -38,15 +46,15 @@ change false to true for:
 
 config.action_mailer.raise_delivery_errors = true
 
-1- gem 'mailgun-ruby', '~>1.1.6'
 
-2-rails g scaffold user name:string email:string
 
-3-rake db:migrate
+1-rails g scaffold user name:string email:string
 
-4- rails g mailer example_mailer
+2-rake db:migrate
 
-5- in app/mailers/example_mailer.rb
+3- rails g mailer example_mailer
+
+4- in app/mailers/example_mailer.rb
 
 ```
 class ExampleMailer < ActionMailer::Base
@@ -60,7 +68,7 @@ end
 
 ```
 
-6- in app/views/example_mailer, Create a file sample_email.html.erb
+5- in app/views/example_mailer, Create a file sample_email.html.erb
 
 ```
 <!DOCTYPE html>
@@ -77,14 +85,14 @@ end
 </html>
 
 ```
-7- create sample_email.text.erb in the app/views/example_mailer directory.
+6- create sample_email.text.erb in the app/views/example_mailer directory.
 
 ```
 Hi <%= @user.name %>
 Sample mail sent using smtp.
 
 ```
-8- In the development environment we can use ActionMailer Preview to test our application.
+7- In the development environment we can use ActionMailer Preview to test our application.
 
 test/mailers/previews/example_mailer_preview.rb
 
@@ -98,13 +106,11 @@ end
 
 ```
 
-# Sending emails using ActionMailer and Gmail
+8- We will do so by using the gem "figaro"
 
-1- We will do so by using the gem "figaro"
+9- bundle exec figaro install
 
-2- bundle exec figaro install
-
-3- /config/application.yml
+10- /config/application.yml
 
 ```
 gmail_username: 'username@gmail.com'
@@ -160,7 +166,7 @@ end
 
 ```
 
-<!-- # Sending emails using ActionMailer and Mailgun through SMTP
+# Sending emails using ActionMailer and Mailgun through SMTP
 
 1- /config/application.yml
 
@@ -176,6 +182,8 @@ gmail_password: 'gmail password'
 
 2- /config/environments/production.rb
 
+As we want to use mailgun as a SMTP need to replace the gmail config in development and production with following:
+
 ```
 config.action_mailer.delivery_method = :smtp
 # SMTP settings for mailgun
@@ -188,14 +196,24 @@ ActionMailer::Base.smtp_settings = {
   :authentication => :plain,
 }
 
-``` -->
-<!-- # Sending emails using ActionMailer and Mailgun through Mailgun’s APIs
+```
+
+We may receive an error like:
+
+554 Sandbox subdomains are for test purposes only. Please add your own domain or add the address to authorised recipients in Account Settings.
+
+it means code is right but need to work on mailgun.Mailgun needs to our domain or authorised receiptance emails to avoid spam emails.
+
+
+# Sending emails using ActionMailer and Mailgun through Mailgun’s APIs
 
 1-
 
 ```
 
 gem 'mailgun-ruby'
+
+we have to replace perviouse sending method with this one:
 
 ```
 
@@ -216,8 +234,3 @@ class ExampleMailer < ActionMailer::Base
 end
 
 ```
-
-Mailgun::Client.new
-initiates mailgun client using the API keys.
- In message_params we are providing custom email information and .send_message takes care of sending emails via Mailgun API.
-  You should change from@example.com to desired sender’s email address. -->
