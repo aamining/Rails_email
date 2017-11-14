@@ -1,6 +1,6 @@
-# setup mailgun
+# setup sending Email by our gmail account.
 
-By this method we do not use mailgun but we using our gmail account as s SMTP account.
+By this method we do not use mailgun but we using our gmail account as a SMTP account.
 
 So we have to change our gmail scurity  as following:
 
@@ -20,7 +20,7 @@ and change :
  link of that email
 
 
-#Sending Emails Using ActionMailer and Gmail
+# Sending Emails Using ActionMailer and Gmail
 
 first we need to copy
 
