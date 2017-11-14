@@ -1,6 +1,42 @@
 # setup mailgun
 
+By this method we do not use mailgun but we using our gmail account as s SMTP account.
+
+So we have to change our gmail scurity  as following:
+
+by this link:
+
+```
+https://accounts.google.com/DisplayUnlockCaptcha
+```
+and by checking or gmail inbox and review email of
+
+Review blocked sign-in attempt
+
+and change :
+
+ "allowing access to less secure apps"
+
+ link of that email
+
+
 #Sending Emails Using ActionMailer and Gmail
+
+first we need to copy
+
+In : config/environments/development.rb:
+
+```
+config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+
+```
+
+and in : config>environment>development
+
+change false to true for:
+
+config.action_mailer.raise_delivery_errors = true
 
 1- gem 'mailgun-ruby', '~>1.1.6'
 
@@ -14,7 +50,7 @@
 
 ```
 class ExampleMailer < ActionMailer::Base
-  default from: "postmaster@ali.mydomain.com"
+
 
   def sample_email(user)
     @user = user
@@ -99,7 +135,9 @@ We just need to add :
 ExampleMailer.sample_email(@user).deliver
 
 ```
-to the create method in app/controllers/users_controller.rb. The create method in users_controller.rb should look something like:
+to the create method in app/controllers/users_controller.rb.
+
+The create method in users_controller.rb should look something like:
 
 ```
 def create
@@ -122,7 +160,7 @@ end
 
 ```
 
-# Sending emails using ActionMailer and Mailgun through SMTP
+<!-- # Sending emails using ActionMailer and Mailgun through SMTP
 
 1- /config/application.yml
 
@@ -150,4 +188,36 @@ ActionMailer::Base.smtp_settings = {
   :authentication => :plain,
 }
 
+``` -->
+<!-- # Sending emails using ActionMailer and Mailgun through Mailgun’s APIs
+
+1-
+
 ```
+
+gem 'mailgun-ruby'
+
+```
+
+2- app/mailers/example_mailer.rb
+
+```
+class ExampleMailer < ActionMailer::Base
+
+  def sample_email(user)
+    @user = user
+    mg_client = Mailgun::Client.new ENV['api_key']
+    message_params = {:from    => ENV['gmail_username'],
+                      :to      => @user.email,
+                      :subject => 'Sample Mail using Mailgun API',
+                      :text    => 'This mail is sent using Mailgun API via mailgun-ruby'}
+    mg_client.send_message ENV['domain'], message_params
+  end
+end
+
+```
+
+Mailgun::Client.new
+initiates mailgun client using the API keys.
+ In message_params we are providing custom email information and .send_message takes care of sending emails via Mailgun API.
+  You should change from@example.com to desired sender’s email address. -->
